@@ -13,7 +13,7 @@ namespace VrKayak.Tests
         [Test]
         public void Test2()
         {
-            Assert.That(2 + 2, Is.EqualTo(4));
+            Assert.That(2 + 2, Is.EqualTo(14));
         }
     }
 }

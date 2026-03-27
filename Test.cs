@@ -13,7 +13,13 @@ namespace VrKayak.Tests
         [Test]
         public void Test2()
         {
-            Assert.That(2 + 2, Is.EqualTo(14));
+            Assert.That(2 + 2, Is.EqualTo(4));
+        }
+
+        [Test]
+        public void Test3()
+        {
+            Assert.Pass("Need CI! {Placeholder}");
         }
     }
 }

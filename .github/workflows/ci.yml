@@ -1,6 +1,8 @@
 name: CI Pipeline (C#)
 
 on:
+  push:
+    branches: [ master ]
   pull_request:
     branches: [ main, master ]
 

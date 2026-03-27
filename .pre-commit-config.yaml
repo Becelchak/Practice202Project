@@ -27,6 +27,16 @@ repos:
 #        pass_filenames: false
 #        always_run: true
 
+  - repo: local
+    hooks:
+      - id: dotnet-build
+        name: dotnet build
+        entry: dotnet build scr/VrKayak.Backend/VrKayak.Backend.csproj --no-restore --verbosity quiet
+        language: system
+        files: \.(cs|csproj)$
+        pass_filenames: false
+        always_run: true
+
   - repo: https://github.com/Yelp/detect-secrets
     rev: v1.5.0
     hooks:

@@ -80,9 +80,9 @@ jobs:
           context: .
           file: ./artifacts/Dockerfile
           push: true
-          tags: ghcr.io/becelchak/Practice202Project/vrkayak-backend:latest
-          cache-from: type=registry,ref=ghcr.io/becelchak/Practice202Project/vrkayak-backend:cache
-          cache-to: type=registry,ref=ghcr.io/becelchak/Practice202Project/vrkayak-backend:cache,mode=max
+          tags: ghcr.io/becelchak/practice202project/vrkayak-backend:latest
+          cache-from: type=registry,ref=ghcr.io/becelchak/practice202project/vrkayak-backend:cache
+          cache-to: type=registry,ref=ghcr.io/becelchak/practice202project/vrkayak-backend:cache,mode=max
   test:
     runs-on: ubuntu-latest
     strategy:

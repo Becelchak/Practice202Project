@@ -39,7 +39,61 @@ jobs:
       - name: Lint with dotnet format
         run: dotnet format **/VrKayak.Backend/VrKayak.Backend.csproj --verify-no-changes --severity warn
 
-      - name: Security scan (basic)
+      - name: Security scan (SCA)
         run: |
-          dotnet list package --vulnerable --include-transitive
-        continue-on-error: true
+          dotnet list scr/VrKayak.Backend/VrKayak.Backend.csproj package --vulnerable --include-transitive --format json > vuln.json
+          CRITICAL=$(jq '.projects[].frameworks[].topLevelPackages[]?.vulnerabilities[]?.severity' vuln.json | grep -c "Critical" || true)
+          if [ "$CRITICAL" -gt 0 ]; then
+            echo "❌ Found $CRITICAL critical vulnerabilities!" && exit 1
+          else
+            echo "✅ No critical vulnerabilities"
+          fi
+        continue-on-error: false
+  docker-build-push:
+    runs-on: ubuntu-latest
+    needs: [build-and-test]
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./artifacts/Dockerfile
+          push: true
+          tags: ghcr.io/becelchak/Practice202Project/vrkayak-backend:latest
+          cache-from: type=registry,ref=ghcr.io/becelchak/Practice202Project/vrkayak-backend:cache
+          cache-to: type=registry,ref=ghcr.io/becelchak/Practice202Project/vrkayak-backend:cache,mode=max
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet-version: ['8.0.x', '9.0.x']
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+      - name: Test
+        run: dotnet test scr/VrKayak.Backend/VrKayak.Backend.csproj
+  security-codeql:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v4
+        - name: Initialize CodeQL
+          uses: github/codeql-action/init@v3
+          with:
+            languages: csharp
+        - name: Autobuild
+          uses: github/codeql-action/autobuild@v3
+        - name: Perform CodeQL Analysis
+          uses: github/codeql-action/analyze@v3

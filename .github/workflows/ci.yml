@@ -27,9 +27,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
-      - name: List files to debug
-        run: find . -name "*.csproj"
-
       - name: Restore dependencies
         run: dotnet restore **/VrKayak.Backend/VrKayak.Backend.csproj
 

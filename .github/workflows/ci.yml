@@ -28,7 +28,7 @@ jobs:
             ${{ runner.os }}-nuget-
 
       - name: List files to debug
-        run: find . -VrKayak.Backend "*.csproj"
+        run: find . VrKayak.Backend "*.csproj"
 
       - name: Restore dependencies
         run: dotnet restore scr/VrKayak.Backend/VrKayak.Backend.csproj

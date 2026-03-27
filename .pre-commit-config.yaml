@@ -31,7 +31,7 @@ repos:
     hooks:
       - id: dotnet-build
         name: dotnet build
-        entry: dotnet build scr/VrKayak.Backend/VrKayak.Backend.csproj --no-restore --verbosity quiet
+        entry: cmd /c "dotnet build scr/VrKayak.Backend/VrKayak.Backend.csproj --no-restore --verbosity quiet > dotnet-build.log 2>&1"
         language: system
         files: \.(cs|csproj)$
         pass_filenames: false

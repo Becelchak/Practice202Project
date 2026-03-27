@@ -31,7 +31,7 @@ jobs:
         run: find . VrKayak.Backend "*.csproj"
 
       - name: Restore dependencies
-        run: dotnet restore scr/VrKayak.Backend/VrKayak.Backend.csproj
+        run: dotnet restore **/VrKayak.Backend/VrKayak.Backend.csproj
 
       - name: Build solution
         run: dotnet build **/VrKayak.Backend/VrKayak.Backend.csproj --no-restore --configuration Release

@@ -1,0 +1,37 @@
+{
+  "dashboard": {
+    "title": "API Golden Signals",
+    "panels": [
+      {
+        "title": "Request Rate (RPS)",
+        "targets": [ { "expr": "sum(rate(http_requests_received_total[5m]))" } ],
+        "type": "stat"
+      },
+      {
+        "title": "Error Rate (%)",
+        "targets": [ { "expr": "(sum(rate(http_requests_received_total{code=~\"5..\"}[5m])) / sum(rate(http_requests_received_total[5m]))) * 100" } ],
+        "type": "stat",
+        "thresholds": [
+          {
+            "value": 1,
+            "color": "yellow"
+          },
+          {
+            "value": 5,
+            "color": "red"
+          }
+        ]
+      },
+      {
+        "title": "Latency p95",
+        "targets": [ { "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))" } ],
+        "type": "timeseries"
+      },
+      {
+        "title": "Active Requests",
+        "targets": [ { "expr": "http_requests_in_progress" } ],
+        "type": "gauge"
+      }
+    ]
+  }
+}

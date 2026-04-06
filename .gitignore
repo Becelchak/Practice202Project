@@ -76,3 +76,6 @@ crashlytics-build.properties
 **/obj/
 *dotnet-build.log
 dotnet-format.log
+
+artifacts/
+*.json

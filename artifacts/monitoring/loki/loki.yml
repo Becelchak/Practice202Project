@@ -1,13 +1,27 @@
 auth_enabled: false
+
 server:
   http_listen_port: 3100
+
 common:
   path_prefix: /loki
+  replication_factor: 1
   storage:
     filesystem:
       chunks_directory: /loki/chunks
       rules_directory: /loki/rules
-  replication_factor: 1
+  # ДОБАВЬТЕ ЭТИ СТРОКИ:
+  ring:
+    kvstore:
+      store: memberlist
+
+# Также стоит явно указать использование memberlist для планировщика запросов,
+# так как в логе ошибка была именно на нем (collectors/scheduler)
+query_scheduler:
+  scheduler_ring:
+    kvstore:
+      store: memberlist
+
 schema_config:
   configs:
     - from: 2020-10-24
@@ -17,5 +31,6 @@ schema_config:
       index:
         prefix: index_
         period: 24h
+
 limits_config:
   retention_period: 744h

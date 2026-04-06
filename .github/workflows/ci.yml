@@ -143,9 +143,16 @@ jobs:
   image-scan:
     runs-on: ubuntu-latest
     needs: [docker-build-push]
-    if: always() && (needs.docker-build-push.result == 'success')
     steps:
-      - name: Scan Docker image with Trivy
+      - name: Save JSON report (all severities)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: "ghcr.io/becelchak/vrkayak-backend-ci:latest"
+          format: "json"
+          severity: "CRITICAL,HIGH,MEDIUM,LOW"
+          output: "artifacts/trivy-image-report.json"
+          exit-code: "0"
+      - name: Scan with blocking on CRITICAL/HIGH
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: "ghcr.io/becelchak/vrkayak-backend-ci:latest"
@@ -153,15 +160,8 @@ jobs:
           severity: "CRITICAL,HIGH"
           exit-code: "1"
           output: "trivy-image-report.txt"
-      - name: Save JSON report
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: "ghcr.io/becelchak/vrkayak-backend-ci:latest"
-          format: "json"
-          severity: "CRITICAL,HIGH,MEDIUM,LOW"
-          output: "artifacts/trivy-image-report.json"
-      - name: Upload report
+      - name: Upload reports
         uses: actions/upload-artifact@v4
         with:
-          name: trivy-image-report
-          path: artifacts/trivy-image-report.json
+          name: trivy-reports
+          path: artifacts/

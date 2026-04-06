@@ -8,7 +8,7 @@ COPY scr/VrKayak.Backend/. ./VrKayak.Backend/
 WORKDIR /src/VrKayak.Backend
 RUN dotnet publish -c Release -o /app/publish --no-restore
 
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:9.0-alpine AS runtime
 WORKDIR /app
 EXPOSE 80
 
